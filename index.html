@@ -34,7 +34,7 @@
                 <script type ="text/javascript" src ="jquery.csv.min.js"></script>		
 			<script>
                             
-                            var data;
+                           var data;
                            var arrx,arry;
                            
                            function f(){
@@ -47,6 +47,7 @@
                                     async: false,
                                     success: function (csvd) {
                                         data = $.csv.toArrays(csvd);
+                                       // console.log(data);
                                     },
                                     dataType: "text",
                                     complete: function () {
@@ -54,12 +55,12 @@
                                         // call a function on complete 
                                     }
                                 });
-                                arrx = data[0];
-                                arry = data[1]; 
+                                arrcolors = data[0];
+                                arrx = data[1];
+                                arry = data[2]; 
                                 
                            }
-                         
-                            
+                          
                         </script>
 	 </head> 
 	
@@ -102,7 +103,6 @@
 		</div><!-- container -->
 	</body>
 </html>
-<!--
 <script>
    var canvas = document.getElementById("canvas");
    var context = canvas.getContext("2d");
@@ -119,5 +119,3 @@
    }
     
 </script>
-
- -->

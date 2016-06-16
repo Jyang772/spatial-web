@@ -1,123 +1,142 @@
-<!DOCTYPE html>
 <html>
-	<head>
-            
-		<title>
-			KNN
-		</title>
-		
-		<!-- css sheet for how the page is laid out -->
-		
-		<link rel="stylesheet" href="visualizationPageStyle.css">
-			
-			
-		<!-- jqueury stuff.  Only used for the animation speed slider. -->
-		<link rel="stylesheet" href="ThirdParty/jquery-ui-1.8.11.custom.css">
-				
-		<script src="ThirdParty/jquery-1.5.2.min.js"></script>
-		<script src="ThirdParty/jquery-ui-1.8.11.custom.min.js"></script>
-				
-		<!-- Javascript for the actual visualization code -->
-		<script type = "text/javascript" src = "AnimationLibrary/CustomEvents.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/UndoFunctions.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/AnimatedObject.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/AnimatedLabel.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/AnimatedCircle.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/AnimatedRectangle.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/AnimatedLinkedList.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/HighlightCircle.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/Line.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/ObjectManager.js"> </script>
-		<script type = "text/javascript" src = "AnimationLibrary/AnimationMain.js"> </script>
-		<script type = "text/javascript" src = "AlgorithmLibrary/Algorithm.js"> </script>
-		<script type = "text/javascript" src = "AlgorithmLibrary/algo.js"> </script> 
-                <script type ="text/javascript" src ="jquery.csv.min.js"></script>		
-			<script>
-                            
-                            var data;
-                           var arrx,arry;
-                           
-                           function f(){
-                              /*var fakepath = $("#csv").val();
-                              var arr = fakepath.split("\\");
-                              var filename = arr[2];*/
-                              var filename = "file.csv";
-                              $.ajax({
-                                    url: filename,
-                                    async: false,
-                                    success: function (csvd) {
-                                        data = $.csv.toArrays(csvd);
-                                    },
-                                    dataType: "text",
-                                    complete: function () {
-                                    
-                                        // call a function on complete 
-                                    }
-                                });
-                                arrx = data[0];
-                                arry = data[1]; 
-                                
-                           }
-                         
-                            
-                        </script>
-	 </head> 
+  <body>
+    <canvas id="myCanvas" width="1000" height="1000"></canvas>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+
+	<script>
+	var canvas = document.getElementById('myCanvas');
+	var context = canvas.getContext('2d');
+	var circles = [];
+
+	var draw = function (context, x, y, fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext,fill) {
+	    context.beginPath();
+	    context.arc(x, y, radius, 0, 2 * Math.PI, false);
+	    context.fillStyle = fillcolor;
+	    if(fill)
+	    context.fill();
+	    context.lineWidth = linewidth;
+	    context.strokeStyle = strokestyle;
+	    context.stroke();
+	    
+	    context.fillStyle = fontcolor;
+	    context.textAlign = textalign;
+	    context.font = fonttype;
+	    
+	    context.fillText(filltext, x, y-radius-1);    
+	};
+
+	var Circle = function(x, y, radius) {
+		this.x  = x;
+		this. y = y;
+		this.radius = radius;
+	    this.left = x - radius;
+	    this.top = y - radius;
+	    this.right = x + radius;
+	    this.bottom = y + radius;
+	};
+
+
+	var drawCircle = function (context, x, y, fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext, circles,fill=true) {
+	    draw(context, x, y, fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext,fill);
+	    var circle = new Circle(x, y, radius);
+	    circles.push(circle);  
+	};
+
+
+	var initial = function() {
+	drawCircle(context, 200, canvas.height / 2, "black", 10, 0, "#003300", "black", "center", "bold 32px Arial", "0", circles);
+	drawCircle(context, 144, canvas.height / 3, "black", 10, 0, "#003300", "black", "center", "bold 32px Arial", "1", circles);
+	drawCircle(context, 300, canvas.height / 3, "black", 10, 0, "#003300", "black", "center", "bold 32px Arial", "2", circles);
+	drawCircle(context, 350, canvas.height / 3, "black", 10, 0, "#003300", "black", "center", "bold 32px Arial", "3", circles);
+	drawCircle(context, 244, 345, "black", 10, 0, "#003300", "black", "center", "bold 32px Arial", "4", circles);
+	drawCircle(context, 385,50,"black",10, 0, "#003300", "black", "center", "bold 32px Arial", "5", circles);
+	}
+
+	Node.prototype.sortByDistance = function() {
+		this.neighbors.sort(function(a,b) {
+	  return a.distance - b.distance;
+	  })
+	}
+
+	var measureDistance = function(index,k) {
+
+		function neighbor() {
+	  this.dist = 0;
+	  this.circles = 0;
+	  }
+	  
+	  var neighborslist = [];
+	  
+		for(var i in circles) {
+		if(i != index) {
+			  var n = new neighbor();
+				dx = circles[index].x - circles[i].x;
+		  dy = circles[index].y - circles[i].y;
+		  n.dist = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
+		  n.circles = i;
+		  neighborslist.push(n);
+	    }
+	  }
+	  
+	  //console.log(neighborslist[0]);
+	  //console.log(neighborslist[1]);
+	  neighborslist.sort(function(a,b){
+		return a.dist - b.dist;
+	  })
+	  
+	  //console.log(neighborslist[1]);
 	
-	<body onload="init();" class="VisualizationMainPage">
+	context.lineWidth = 0;	
+	draw(context,circles[index].x,circles[index].y,"Chartreuse",circles[index].radius,0,"#003300", "black", "center", "bold 32px Arial", "",true);	
 		
-		<div id = "container">
-			
-			<div id="header">  
-				<h1>KNN</h1>
-			</div>
-			
-			<div id = "mainContent"> 
-				<input type="file" id="csv" name="csv" onchange="f()">
-                                
-				<div id = "algoControlSection">
-					<!-- Table for buttons to control specific animation (insert/find/etc) -->
-					<!-- (filled in by javascript code specific to the animtion) -->
-					<table id="AlgorithmSpecificControls"> 
-                                        
-                                        </table> 
-				</div>
-				
-					<!-- Drawing canvas where all animation is done.  Note:  can be resized in code -->
-									
-				<!--<canvas id="canvas" width="1000" height="500" onclick="cords(event)"></canvas>-->
-                                <canvas id="canvas" width="1000" height="500"></canvas>
-				<div id = "generalAnimationControlSection">
-					<!-- Table for buttons to control general animation (play/pause/undo/etc) ->
-					<!-- (filled in by javascript code, specifically AnimationMain.js)  -->
+	  for(var i=0; i<k;i++){
+	   	console.log(neighborslist[i]);
+	draw(context,circles[neighborslist[i].circles].x,circles[neighborslist[i].circles].y,"Chartreuse",circles[neighborslist[i].circles].radius,0,"#003300", "black", "center", "bold 32px Arial", "",true);	
 
-					<table id="GeneralAnimationControls">  </table>		
-				</div>
-				
-			</div> <!-- mainContent -->
-			
-			<div id="footer">  
-				<p><a href="Algorithms.html">Algorithm Visualizations</a></p>
-			</div>
+	   }
+	
+	
+	  draw(context, circles[index].x,circles[index].y,"blue",neighborslist[k-1].dist, 4, "red", "", "center", "bold 32px Arial", "",false);
+		context.lineWidth = 1;
+	}
 
-		</div><!-- container -->
-	</body>
+	$('#myCanvas').click(function (e) {
+			var k = 2;
+			context.clearRect(0, 0, canvas.width, canvas.height);
+	    circles = [];
+			initial();
+	    var clickedX = e.pageX - this.offsetLeft;
+	    var clickedY = e.pageY - this.offsetTop;
+	    
+	    for (var i = 0; i < circles.length; i++) {
+		if (clickedX < circles[i].right && clickedX > circles[i].left && clickedY > circles[i].top && clickedY < circles[i].bottom) {
+			  measureDistance(i,k);
+		    //alert ('clicked number ' + (i + 1));
+		    break;
+		}
+	    }
+	});
+
+//Misc functions
+Array.prototype.contains = function(v) {
+    for(var i = 0; i < this.length; i++) {
+        if(this[i] === v) return true;
+    }
+    return false;
+};
+
+Array.prototype.unique = function() {
+    var arr = [];
+    for(var i = 0; i < this.length; i++) {
+        if(!arr.contains(this[i])) {
+            arr.push(this[i]);
+        }
+    }
+    return arr; 
+}
+
+
+	initial();
+	</script>
+</body>
 </html>
-<!--
-<script>
-   var canvas = document.getElementById("canvas");
-   var context = canvas.getContext("2d");
-   function cords(event)
-   {
-       context.clearRect(0, 0, canvas.width, canvas.height);
-       MyAlgorithm.prototype.simpleAction();
-       var x = event.pageX - canvas.offsetLeft;
-       var y = event.pageY - canvas.offsetTop; 
-       console.log(canvas.offsetTop+" "+event.pageY);
-       context.beginPath();
-       context.arc(x,y, 10,0, 2*Math.PI);
-       context.stroke();
-   }
-    
-</script>
-
- -->

@@ -1,142 +1,52 @@
+<!-- Draw some random circles
+http://jsfiddle.net/markm/jxeh0kks/
+-->
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    <ul>
+      <li><a class="active" href="#home">KNN-Cloak</a></li>
+      <li><a href="#Casper">Casper</a></li>
+      <li><a href="#Hilbert">Hilbert</a></li>
+    </ul>
+    </head>
   <body>
-    <canvas id="myCanvas" width="1000" height="1000"></canvas>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+      
+      <form>
+      <div class=noselect>
+      N: <input type="number" min="1" max="200" step="1" value="20" name="K" id="n" onchange="drawInitial()"/> <br>
+      K: <input type="number" min="1" max="10" step="1" value="2" name="K" id="k"/> <br>
+      Algorithm: 
+      <input type="radio" id = "knn" name="algorithm" value="KNN"> KNN-cloak
+      <input type="radio" id = "casper" name="algorithm" value="KNN"> Casper
+      <input type="radio" id = "hilbert" name="algorithm" value="KNN"> Hilbert
+      </div>
+      </form>
+     
+     
+   <div class="wrapper">
 
-	<script>
-	var canvas = document.getElementById('myCanvas');
-	var context = canvas.getContext('2d');
-	var circles = [];
+       <canvas id="myCanvas" style="border: none;" width="1000" height="1000"></canvas>
+       	<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+	    	<script type="text/javascript" src="undo.js"></script>
+	    	<script type="text/javascript" src="draw.js"></script>
+            <script type="text/javascript" src="code.js"></script>
 
-	var draw = function (context, x, y, fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext,fill) {
-	    context.beginPath();
-	    context.arc(x, y, radius, 0, 2 * Math.PI, false);
-	    context.fillStyle = fillcolor;
-	    if(fill)
-	    context.fill();
-	    context.lineWidth = linewidth;
-	    context.strokeStyle = strokestyle;
-	    context.stroke();
-	    
-	    context.fillStyle = fontcolor;
-	    context.textAlign = textalign;
-	    context.font = fonttype;
-	    
-	    context.fillText(filltext, x, y-radius-1);    
-	};
+       <div class="controls" style="position: fixed; top:40; left:1010;">
 
-	var Circle = function(x, y, radius) {
-		this.x  = x;
-		this. y = y;
-		this.radius = radius;
-	    this.left = x - radius;
-	    this.top = y - radius;
-	    this.right = x + radius;
-	    this.bottom = y + radius;
-	};
+       <h2>Steps</h2>
+        <p id="info">
+            
+        </p>
 
+       </div>
 
-	var drawCircle = function (context, x, y, fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext, circles,fill=true) {
-	    draw(context, x, y, fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext,fill);
-	    var circle = new Circle(x, y, radius);
-	    circles.push(circle);  
-	};
+    </div>
+    <!--<div>
+    <canvas id="myCanvas" width="1000" height="1000" align="left"></canvas>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="code.js"></script>
+	</div> -->
 
-
-	var initial = function() {
-	drawCircle(context, 200, canvas.height / 2, "black", 10, 0, "#003300", "black", "center", "bold 32px Arial", "0", circles);
-	drawCircle(context, 144, canvas.height / 3, "black", 10, 0, "#003300", "black", "center", "bold 32px Arial", "1", circles);
-	drawCircle(context, 300, canvas.height / 3, "black", 10, 0, "#003300", "black", "center", "bold 32px Arial", "2", circles);
-	drawCircle(context, 350, canvas.height / 3, "black", 10, 0, "#003300", "black", "center", "bold 32px Arial", "3", circles);
-	drawCircle(context, 244, 345, "black", 10, 0, "#003300", "black", "center", "bold 32px Arial", "4", circles);
-	drawCircle(context, 385,50,"black",10, 0, "#003300", "black", "center", "bold 32px Arial", "5", circles);
-	}
-
-	Node.prototype.sortByDistance = function() {
-		this.neighbors.sort(function(a,b) {
-	  return a.distance - b.distance;
-	  })
-	}
-
-	var measureDistance = function(index,k) {
-
-		function neighbor() {
-	  this.dist = 0;
-	  this.circles = 0;
-	  }
-	  
-	  var neighborslist = [];
-	  
-		for(var i in circles) {
-		if(i != index) {
-			  var n = new neighbor();
-				dx = circles[index].x - circles[i].x;
-		  dy = circles[index].y - circles[i].y;
-		  n.dist = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
-		  n.circles = i;
-		  neighborslist.push(n);
-	    }
-	  }
-	  
-	  //console.log(neighborslist[0]);
-	  //console.log(neighborslist[1]);
-	  neighborslist.sort(function(a,b){
-		return a.dist - b.dist;
-	  })
-	  
-	  //console.log(neighborslist[1]);
-	
-	context.lineWidth = 0;	
-	draw(context,circles[index].x,circles[index].y,"Chartreuse",circles[index].radius,0,"#003300", "black", "center", "bold 32px Arial", "",true);	
-		
-	  for(var i=0; i<k;i++){
-	   	console.log(neighborslist[i]);
-	draw(context,circles[neighborslist[i].circles].x,circles[neighborslist[i].circles].y,"Chartreuse",circles[neighborslist[i].circles].radius,0,"#003300", "black", "center", "bold 32px Arial", "",true);	
-
-	   }
-	
-	
-	  draw(context, circles[index].x,circles[index].y,"blue",neighborslist[k-1].dist, 4, "red", "", "center", "bold 32px Arial", "",false);
-		context.lineWidth = 1;
-	}
-
-	$('#myCanvas').click(function (e) {
-			var k = 2;
-			context.clearRect(0, 0, canvas.width, canvas.height);
-	    circles = [];
-			initial();
-	    var clickedX = e.pageX - this.offsetLeft;
-	    var clickedY = e.pageY - this.offsetTop;
-	    
-	    for (var i = 0; i < circles.length; i++) {
-		if (clickedX < circles[i].right && clickedX > circles[i].left && clickedY > circles[i].top && clickedY < circles[i].bottom) {
-			  measureDistance(i,k);
-		    //alert ('clicked number ' + (i + 1));
-		    break;
-		}
-	    }
-	});
-
-//Misc functions
-Array.prototype.contains = function(v) {
-    for(var i = 0; i < this.length; i++) {
-        if(this[i] === v) return true;
-    }
-    return false;
-};
-
-Array.prototype.unique = function() {
-    var arr = [];
-    for(var i = 0; i < this.length; i++) {
-        if(!arr.contains(this[i])) {
-            arr.push(this[i]);
-        }
-    }
-    return arr; 
-}
-
-
-	initial();
-	</script>
 </body>
 </html>

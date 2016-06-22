@@ -1,40 +1,21 @@
 //Justin 
 //KNN-Cloak visualization using a naive-approach to calculating KNN
 
-
-    var canvas = document.getElementById('myCanvas');
-	var context = canvas.getContext('2d');
+	var initialCircles = []; //Initial circles drawn to canvas
 	var circles = [];
 	var numCircles = 20;
 	var k = 2; //Default
 	var steps = 1;
 	var finAnimate = false;
 	
+	var level = 2;
+	
 	
 	//Canvas undo
-	var canvasLogBook = new CanvasLogBook();
+var canvasLogBook = new CanvasLogBook();
 	
 
-/*	
-    var draw = function (context, x, y, fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext,fill) {
-	    context.beginPath();
-	    context.arc(x, y, radius, 0, 2 * Math.PI, false);
-	    context.fillStyle = fillcolor;
-	    if(fill)
-	    context.fill();
-	    context.lineWidth = linewidth;
-	    context.strokeStyle = strokestyle;
-	    context.stroke();
-	    
-	    context.fillStyle = fontcolor;
-	    context.textAlign = textalign;
-	    context.font = fonttype;
-	    
-	    context.fillText(filltext, x, y-radius-1);    
-	};
-*/
-
-	var Circle = function(x, y, radius) {
+var Circle = function(x, y, radius) {
 		this.x  = x;
 		this. y = y;
 		this.radius = radius;
@@ -44,20 +25,11 @@
 	    this.bottom = y + radius;
 	};
 
-
-/*
-	var drawCircle = function (context, x, y, fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext, circles,fill=true) {
-	    draw(context, x, y, fillcolor, radius, linewidth, strokestyle, fontcolor, textalign, fonttype, filltext,fill);
-	    var circle = new Circle(x, y, radius);
-	    circles.push(circle);  
-	};
-*/
-
-
-var initialCircles = [];
-
-
 var drawInitial = function() {
+    ctx.clearRect(0, 0, $('#myCanvas').width(), $('#myCanvas').height());
+    
+    //drawBoard();
+
     var inputBox0 = document.getElementById("n");
     var inputBox1 = document.getElementById("k");
     numCircles=inputBox0.value;
@@ -102,97 +74,38 @@ var drawInitial = function() {
     }
 }
 
-//KNN-cloak
 var initial = function() {
-    
+        //Erases what was previously drawn and replot the original points
+
         var inputBox1 = document.getElementById("k");
         k=inputBox1.value;
-        console.log(k);
         clearText();
-        
-	    context.closePath();
-	    /*
-	drawCircle(context, 200, canvas.height / 2, "black", 10, 0, "#003300", "black", "center", "bold 32px Arial", "0", circles);
-	drawCircle(context, 144, canvas.height / 3, "black", 10, 0, "#003300", "black", "center", "bold 32px Arial", "1", circles);
-        */
         
 	for(var i=0; i< initialCircles.length; i++)
 		drawCircle(context, initialCircles[i].x, initialCircles[i].y, "black", initialCircles[i].radius, 0, "#003300", "black", "center", "bold 32px Arial",i,circles);
 
 }
 
-	
-function neighbor() {
-	  this.x = 0;
-	  this.y = 0;
-	  this.dist = 0;
-	  this.circles = 0;
-}
-	  
-	var neighborslist = [];
-	var nprint = [];
-
-    //todo rename function to KNN-cloak
-	var measureDistance = function(index,k,initial,second) {
-		neighborslist = [];
-		for(var i in circles) {
-		if(i != index) {
-		  var n = new neighbor();
-		  dx = circles[index].x - circles[i].x;
-		  dy = circles[index].y - circles[i].y;
-		  n.dist = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
-		  n.circles = i;
-		  n.x = circles[i].x;
-		  n.y = circles[i].y;
-		  neighborslist.push(n);
-	    }
-	  }
-	  
-	  neighborslist.sort(function(a,b){
-		return a.dist - b.dist;
-	  });
-	  
-	//Select at random a neighbor
-	context.lineWidth = 0;
-	if(second) //Get another KNN for a point in the set of KNNs
-	    draw(context,circles[index].x,circles[index].y,"blue",circles[index].radius,0,"#003300", "black", "center", "bold 32px Arial", "",true);	
-	  for(var i=0; i<k;i++){
-	   	console.log(neighborslist[i]);
-		if(neighborslist[i].circles != initial) {
-	        draw(context,circles[neighborslist[i].circles].x,circles[neighborslist[i].circles].y,"Chartreuse",circles[neighborslist[i].circles].radius,0,"#003300", "black", "center", "bold 32px Arial", "",true);
-		nprint.push(circles[neighborslist[i].circles]);
-	   }
-
-        //Select at random a neighbor
-	  if(second){
-	    draw(context, circles[index].x,circles[index].y,"blue",neighborslist[k-1].dist, 4, "red", "", "center", "bold 32px Arial", "",false);
-	  }
-      else
-          draw(context, circles[index].x,circles[index].y,"blue",neighborslist[k-1].dist, 1, "red", "", "center", "bold 32px Arial", "",false);
-
-		  context.lineWidth = 1;
-	    //console.log(neighborslist[0].circles);	
-	}
-	
-	/*
-    canvasLogBook.logDrawing();
-    alert("undo");
-    canvasLogBook.undo();
-    alert("redo");
-    canvasLogBook.redo();
-    */
-
+var clearCanvas = function() {
+    console.log("CLEAR");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    initial();
+    
 }
 
-	$('#myCanvas').click(function (e) {
+
+
+$('#myCanvas').click(function (e) {
 	
 	    if(!finAnimate){
 	        return;
 	    }
 	    
 	    finAnimate = false;
+	    if(!document.getElementById("hilbert").checked)
 	    context.clearRect(0, 0, canvas.width, canvas.height);
-	    circles = [];
+	    //circles = [];
+
 	    initial();
 	    var clickedX = e.pageX - this.offsetLeft;
 	    var clickedY = e.pageY - this.offsetTop;
@@ -200,9 +113,16 @@ function neighbor() {
 	    var found;
 	    
 	    //Detect which circle was clicked
-	    
+	    //console.log("circles.length: " + circles.length);
 	    for (var i = 0; i < circles.length; i++) {
 		    if (clickedX < circles[i].right && clickedX > circles[i].left && clickedY > circles[i].top && clickedY < circles[i].bottom) {
+		   
+		   	    context.clearRect(0, 0, canvas.width, canvas.height);
+	            circles = [];
+	            initial(); //pushes original circles back
+
+
+		   
 		   clickedCircle = i;
 		   nprint = [];
 		  
@@ -218,7 +138,14 @@ function neighbor() {
 	        return;
 	    }
 	    
-	        canvasLogBook.logDrawing();
+	    
+	       if(document.getElementById("hilbert").checked){
+	       hilbert(circles[i],k);
+	       finAnimate=true;
+	       return;
+	       }
+	    
+	       //canvasLogBook.logDrawing();
 	    
 	       setTimeout(function() {
 	       //Save screenshot of canvas
@@ -247,9 +174,9 @@ function neighbor() {
 			//todo: put in drawRect function
 			//animate (grow from 0 to x,y)
 			//console.log(output); outputs pointer to object
-			var xmin = output.sort(function(a,b){console.log("a: " + a.x); console.log("b: " + b.x); return a.x-b.x;})[0];
-			for(var x=0; x<output.length;x++)
-			    console.log(output[x]);
+			var xmin = output.sort(function(a,b){return a.x-b.x;})[0];
+			//for(var x=0; x<output.length;x++)
+			    //console.log(output[x]);
 
 			
 			var ymin = output.sort(function(a,b){return a.y-b.y;})[0];
@@ -281,9 +208,13 @@ function neighbor() {
 		},2000);
 
 	});
+	
 
 	//Draw initial points
 	drawInitial();
+	//drawBoard();
+	
+
 	//initial();
 	//canvasLogBook.logDrawing();
 	
@@ -316,4 +247,3 @@ function sleep(milliseconds) {
     }
   }
 }
-

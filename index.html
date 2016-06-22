@@ -17,9 +17,9 @@ http://jsfiddle.net/markm/jxeh0kks/
       N: <input type="number" min="1" max="200" step="1" value="20" name="K" id="n" onchange="drawInitial()"/> <br>
       K: <input type="number" min="1" max="10" step="1" value="2" name="K" id="k"/> <br>
       Algorithm: 
-      <input type="radio" id = "knn" name="algorithm" value="KNN"> KNN-cloak
-      <input type="radio" id = "casper" name="algorithm" value="KNN"> Casper
-      <input type="radio" id = "hilbert" name="algorithm" value="KNN"> Hilbert
+      <input type="radio" id = "knn" name="algorithm" value="KNN" onchange="clearCanvas()"> KNN-cloak
+      <input type="radio" id = "casper" name="algorithm" value="CASPER"> Casper
+      <input type="radio" id = "hilbert" name="algorithm" value="HILBERT" onchange="clearCanvas()"> Hilbert
       </div>
       </form>
      
@@ -30,6 +30,8 @@ http://jsfiddle.net/markm/jxeh0kks/
        	<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 	    	<script type="text/javascript" src="undo.js"></script>
 	    	<script type="text/javascript" src="draw.js"></script>
+	    	<script type="text/javascript" src="knn.js"></script>
+	    	<script type="text/javascript" src="hilbert.js"></script>
             <script type="text/javascript" src="code.js"></script>
 
        <div class="controls" style="position: fixed; top:40; left:1010;">

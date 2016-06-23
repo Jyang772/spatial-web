@@ -16,6 +16,7 @@ var canvasLogBook = new CanvasLogBook();
 	
 
 var Circle = function(x, y, radius) {
+        this.id;
 		this.x  = x;
 		this. y = y;
 		this.radius = radius;
@@ -25,53 +26,12 @@ var Circle = function(x, y, radius) {
 	    this.bottom = y + radius;
 	};
 
-var drawInitial = function() {
-    ctx.clearRect(0, 0, $('#myCanvas').width(), $('#myCanvas').height());
+var initialize = function() {
     
-    //drawBoard();
+    drawInitial(); //Draw initial random points
+    initHilbert(k); //Calculate initial hilbert elements
 
-    var inputBox0 = document.getElementById("n");
-    var inputBox1 = document.getElementById("k");
-    numCircles=inputBox0.value;
-    if(numCircles > 200)
-        return;
-    ctx.clearRect(0, 0, $('#myCanvas').width(), $('#myCanvas').height());
-    circles = [];
-    initialCircles = [];
-    console.log("Drawing Initial");
     
-    finAnimate = true;
-    //Draw initial points
-    //Random points, make sure none are overlapping and separated by some distance
-    //Determine which algorithm is selected
-    var formElement = document.getElementById("knn");
-    formElement.checked = true;
-    
-    	var dist = function(x,y,ox,oy) {
-	        return Math.sqrt(Math.pow(x-ox,2)+Math.pow(y-oy,2));
-         }
-	
-	var count = 0;
-	while(circles.length < numCircles) {
-    	
-      var radX = Math.random()*canvas.width;
-      var radY = Math.random()*canvas.height + 50;
-      var radR = 10;
-    
-    	var overlapping = false;
-    	for(var j in circles) {
-        d = dist(radX,radY,circles[j].x,circles[j].y);    
-        if(d < (radR + circles[j].radius + 40)) {
-        	overlapping = true;
-          break;
-        }
-      }
-    
-    	if(!overlapping) {
-      	 initialCircles.push(new Circle(radX, radY, radR));
-      	 drawCircle(context,radX,radY, "black",radR,0,"#002200","black","center","bold 32px Arial",count++,circles);
-    	}
-    }
 }
 
 var initial = function() {
@@ -79,7 +39,7 @@ var initial = function() {
 
         var inputBox1 = document.getElementById("k");
         k=inputBox1.value;
-        clearText();
+        //clearText();
         
 	for(var i=0; i< initialCircles.length; i++)
 		drawCircle(context, initialCircles[i].x, initialCircles[i].y, "black", initialCircles[i].radius, 0, "#003300", "black", "center", "bold 32px Arial",i,circles);
@@ -88,8 +48,18 @@ var initial = function() {
 
 var clearCanvas = function() {
     console.log("CLEAR");
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(0, 0, canvasWidth+10, canvasHeight+10);
+    circles = [];
     initial();
+    
+    canvasLogBook = new CanvasLogBook();
+    if(document.getElementById("hilbert").checked){
+        drawBoard(k);
+        drawHilbert(k);
+        initHilbert(k);
+    }
+    //alert("undo");
+    canvasLogBook.logDrawing();
     
 }
 
@@ -102,11 +72,17 @@ $('#myCanvas').click(function (e) {
 	    }
 	    
 	    finAnimate = false;
-	    if(!document.getElementById("hilbert").checked)
+	   // if(!document.getElementById("hilbert").checked)
 	    context.clearRect(0, 0, canvas.width, canvas.height);
+	    
+	    //Show hilbert curve
+	    
 	    //circles = [];
-
 	    initial();
+	    //Show hilbert curve
+	    if(document.getElementById("hilbert").checked)
+	        canvasLogBook.showLogAtIndex(1);
+	   
 	    var clickedX = e.pageX - this.offsetLeft;
 	    var clickedY = e.pageY - this.offsetTop;
 	    var clickedCircle;
@@ -117,18 +93,30 @@ $('#myCanvas').click(function (e) {
 	    for (var i = 0; i < circles.length; i++) {
 		    if (clickedX < circles[i].right && clickedX > circles[i].left && clickedY > circles[i].top && clickedY < circles[i].bottom) {
 		   
-		   	    context.clearRect(0, 0, canvas.width, canvas.height);
+		   	    context.clearRect(0, 0, canvasWidth, canvasHeight);
 	            circles = [];
 	            initial(); //pushes original circles back
 
-
-		   
 		   clickedCircle = i;
 		   nprint = [];
-		  
 		   //Depending on what is selected, decide which algorithm to run
-		   appendNewText(steps++,"Calculate K Neighbors");
+		   //appendNewText(steps++,"Calculate K Neighbors");
+        if(document.getElementById("hilbert").checked)
+		   canvasLogBook.showLogAtIndex(1);
+		   
+
 		   draw(context,circles[i].x,circles[i].y,"red",circles[i].radius,0,"#003300", "black", "center", "bold 32px Arial", "",true);
+		   
+		   if(document.getElementById("hilbert").checked){
+	       //console.log("k: " + k);
+	       hilbert(circles[i],k);
+	       finAnimate=true;
+	       return;
+	       }
+	    
+		   
+		   //alert("undo");
+		   //canvasLogBook.showLogAtIndex(1);
 		   found = true;
 		   break;
 		    }
@@ -139,11 +127,6 @@ $('#myCanvas').click(function (e) {
 	    }
 	    
 	    
-	       if(document.getElementById("hilbert").checked){
-	       hilbert(circles[i],k);
-	       finAnimate=true;
-	       return;
-	       }
 	    
 	       //canvasLogBook.logDrawing();
 	    
@@ -203,16 +186,15 @@ $('#myCanvas').click(function (e) {
 		    context.closePath();
 		    context.restore();
 		    finAnimate = true;
-		    //alert("undo");
-		    //canvasLogBook.undo();
 		},2000);
 
 	});
 	
 
 	//Draw initial points
-	drawInitial();
+	//drawInitial();
 	//drawBoard();
+	initialize();
 	
 
 	//initial();

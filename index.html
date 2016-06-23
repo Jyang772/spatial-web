@@ -15,7 +15,7 @@ http://jsfiddle.net/markm/jxeh0kks/
       <form>
       <div class=noselect>
       N: <input type="number" min="1" max="200" step="1" value="20" name="K" id="n" onchange="drawInitial()"/> <br>
-      K: <input type="number" min="1" max="10" step="1" value="2" name="K" id="k"/> <br>
+      K: <input type="number" min="1" max="10" step="1" value="2" name="K" id="k" onchange="clearCanvas()"/> <br>
       Algorithm: 
       <input type="radio" id = "knn" name="algorithm" value="KNN" onchange="clearCanvas()"> KNN-cloak
       <input type="radio" id = "casper" name="algorithm" value="CASPER"> Casper
@@ -24,9 +24,10 @@ http://jsfiddle.net/markm/jxeh0kks/
       </form>
      
      
-   <div class="wrapper">
+   <div class="wrapper" align="center">
 
-       <canvas id="myCanvas" style="border: none;" width="1000" height="1000"></canvas>
+       <!--<canvas id="myCanvas" width="1000" height="1000" style="border:1px solid #000000;"></canvas> -->
+       <canvas id="myCanvas" width="1010" height="1010" style="border: 2px solid #000000"></canvas>
        	<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 	    	<script type="text/javascript" src="undo.js"></script>
 	    	<script type="text/javascript" src="draw.js"></script>
@@ -34,6 +35,7 @@ http://jsfiddle.net/markm/jxeh0kks/
 	    	<script type="text/javascript" src="hilbert.js"></script>
             <script type="text/javascript" src="code.js"></script>
 
+       <!-- 
        <div class="controls" style="position: fixed; top:40; left:1010;">
 
        <h2>Steps</h2>
@@ -42,6 +44,7 @@ http://jsfiddle.net/markm/jxeh0kks/
         </p>
 
        </div>
+       -->
 
     </div>
     <!--<div>

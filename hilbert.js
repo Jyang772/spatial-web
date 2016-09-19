@@ -1,3 +1,7 @@
+//Hilbert Curve Calculation Functions
+//K-bucket calculations - Justin Yang
+//https://en.wikipedia.org/wiki/Hilbert_curve#Applications_and_mapping_algorithms
+
 var pairs = [
     [[0, 3], [1, 0], [3, 1], [2, 0]],
     [[2, 1], [1, 1], [3, 0], [0, 2]],
@@ -65,6 +69,7 @@ var drawHilbert = function(level) {
         console.log("Drawing Hilbert");
         console.log("Level: " + level);
      //convert to mid-points for graphing hilbert
+     //Get first interval, then add half the width to it each time
      //X = (1000)/(2^(n+1)) + gX * (1000/(2^n))
     
         var n = parseInt(level);
@@ -88,10 +93,10 @@ var drawHilbert = function(level) {
 
 }
 
+//For circle
 var canvas2grid = function(circle,level) {
     var n = level;
     var m = canvasWidth;
-    var n = level;
     var i = 0;
     
     var x = circle.x;
@@ -99,6 +104,28 @@ var canvas2grid = function(circle,level) {
     var gX = 0, gY = 0;
     
 
+    //Determine which cell the point is in
+    i=1;
+    while((m/Math.pow(2,n)) * i++ < x)
+        gX++;
+
+    i=1;
+    while((m/Math.pow(2,n)) * i++ < y)
+        gY++;
+        
+    return [gX,gY];
+}
+
+//For mouse click event
+var canvas2grid_ = function(x,y,level) {
+    var n = level;
+    var m = canvasWidth;
+    var i = 0;
+    
+    var gX = 0, gY = 0;
+    
+
+    //Determine which cell the point is in
     i=1;
     while((m/Math.pow(2,n)) * i++ < x)
         gX++;
@@ -128,7 +155,6 @@ var initHilbert = function(k) {
 }
 
 var hilbert = function(circle,k){
-    
     
     var test = canvas2grid(circle,k);
     console.log("order on curve: " + xy2d(test[0],test[1],k));
@@ -161,6 +187,7 @@ var hilbert = function(circle,k){
 
   console.log("buckets.length: " + buckets.length);
   var index=0;
+  //Find bucket that contains query point
   for(var i=0; i<buckets.length; i++) {
       //Funky comparison for k==odd. Ex. k=3, then there will be two elements in the last bucket
     for(var j=0; j<buckets[i].hElem.length;j++) {
@@ -171,9 +198,10 @@ var hilbert = function(circle,k){
             console.log("curve #: " + buckets[i].hElem[j].i);
             index = i;
         }
-        buckets[i].id = i;
+        //buckets[i].id = i;
         console.log(buckets[i].hElem[j]);
     }
+        buckets[i].id = i;
   }
   
   console.log("finished");
@@ -182,7 +210,17 @@ var hilbert = function(circle,k){
   console.log(buckets[index].id);
   
   
+
+  
+  
             var output = buckets[index].hElem;
+            
+            //Color them green
+     for(var i=0; i<output.length;i++){
+		if(output[i].id!= circle.id) {
+	        draw(context,output[i].circle.x,output[i].circle.y,"Chartreuse",circle.radius,0,"#003300", "black", "center", "bold 32px Arial", "",true);
+		}
+		}
             //xmin returns an hElem object, therefore we get .circle
 	        var xmin = output.sort(function(a,b){return a.circle.x-b.circle.x;})[0].circle;
 			var ymin = output.sort(function(a,b){return a.circle.y-b.circle.y;})[0].circle;
@@ -194,10 +232,14 @@ var hilbert = function(circle,k){
 			var rectxm = xmax.x-xmin.x+2*xmax.radius;
 			var rectym = ymax.y-ymin.y+2*ymax.radius;
 			
+			
+			/* DEBUG
+			Output Rectangle coordinates
 			console.log(rectx);
 			console.log(recty);
 			console.log(rectxm);
 			console.log(rectym);
+			*/
 			
 			context.save();
 			context.beginPath();

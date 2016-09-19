@@ -1,4 +1,5 @@
 <!-- Draw some random circles
+Example:
 http://jsfiddle.net/markm/jxeh0kks/
 -->
 <html>
@@ -14,12 +15,26 @@ http://jsfiddle.net/markm/jxeh0kks/
       
       <form>
       <div class=noselect>
-      N: <input type="number" min="1" max="200" step="1" value="20" name="K" id="n" onchange="drawInitial()"/> <br>
-      K: <input type="number" min="1" max="10" step="1" value="2" name="K" id="k" onchange="clearCanvas()"/> <br>
-      Algorithm: 
+      N: <input type="number" min="1" max="200" step="1" value="20" name="N" id="n" onchange="initialize()"/> <br>
+      K: <input type="number" min="1" max="10" step="1" value="2" name="K" id="k" onchange="clearCanvas(0)"/>
+      Level: <input type="number" min="1" max="10" step="1" value="2" name="level" id="level" onchange="clearCanvas(1)"/> <br>
+      Algorithm:
+      <select id="algos" onchange="clearCanvas(1)" selected="knn">
+          <option value="kn"> KNN</option>
+          <option value="knn">KNN-cloak</option>
+          <option value="ic">IC</option>
+          <option value="casper">Casper</option>
+          <option value="hilbert">Hilbert</option>
+          <option value="PIR">PIR</option>
+      </select>
+      <br>
+      <!--
+      <input type="radio" id = "kn" name="algorithm" value="KNN" onchange="clearCanvas()"> KNN
       <input type="radio" id = "knn" name="algorithm" value="KNN" onchange="clearCanvas()"> KNN-cloak
-      <input type="radio" id = "casper" name="algorithm" value="CASPER"> Casper
-      <input type="radio" id = "hilbert" name="algorithm" value="HILBERT" onchange="clearCanvas()"> Hilbert
+      <input type="radio" id = "ic" name="algorithm" value="IC" onchange="clearCanvas()"> IC
+      <input type="radio" id = "casper" name="algorithm" value="CASPER" onchange="clearCanvas()"> Casper
+      <input type="radio" id = "hilbert" name="algorithm" value="HILBERT" onchange="clearCanvas(1)"> Hilbert
+      -->
       </div>
       </form>
      
@@ -27,24 +42,24 @@ http://jsfiddle.net/markm/jxeh0kks/
    <div class="wrapper" align="center">
 
        <!--<canvas id="myCanvas" width="1000" height="1000" style="border:1px solid #000000;"></canvas> -->
-       <canvas id="myCanvas" width="1010" height="1010" style="border: 2px solid #000000"></canvas>
+       <canvas id="myCanvas" width="1100" height="1100" style="border: 0px dashed white"></canvas>
        	<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 	    	<script type="text/javascript" src="undo.js"></script>
 	    	<script type="text/javascript" src="draw.js"></script>
 	    	<script type="text/javascript" src="knn.js"></script>
 	    	<script type="text/javascript" src="hilbert.js"></script>
+	    	<script type="text/javascript" src="casper.js"></script>
+	    	<script type="text/javascript" src="voronoi.js"></script>
             <script type="text/javascript" src="code.js"></script>
 
-       <!-- 
-       <div class="controls" style="position: fixed; top:40; left:1010;">
+       <div class="controls" style="position: fixed; top:40; left:1250;">
 
-       <h2>Steps</h2>
+       <h2></h2>
         <p id="info">
             
         </p>
 
        </div>
-       -->
 
     </div>
     <!--<div>

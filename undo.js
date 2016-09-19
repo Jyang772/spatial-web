@@ -1,3 +1,6 @@
+//Undo functionality for HTML canvas
+
+
 var isFirefox = typeof InstallTrigger !== 'undefined';
 var ctx = document.getElementById('myCanvas').getContext("2d");
 var CanvasLogBook = function() {

@@ -134,6 +134,12 @@ var canvas2grid_ = function(x,y,level) {
     while((m/Math.pow(2,n)) * i++ < y)
         gY++;
         
+
+    gX = Math.floor(x/(m/Math.pow(2,n)));
+    gY = Math.floor(y/(m/Math.pow(2,n)));
+    
+    console.log("GRID: " + gX + ", " + gY);
+        
     return [gX,gY];
 }
 
@@ -181,7 +187,10 @@ var hilbert = function(circle,k){
         console.log(i);
   }
   //push last bucket into list
-  buckets.push(b);
+  //buckets.push(b);
+  for(var i=0; i<b.hElem.length; i++)
+  buckets[buckets.length-1].hElem.splice(0,0,b.hElem[i]);
+        
   
   console.log("CIRCLE ID: " + circle.id);
 
@@ -213,7 +222,7 @@ var hilbert = function(circle,k){
 
   
   
-            var output = buckets[index].hElem;
+    var output = buckets[index].hElem;
             
             //Color them green
      for(var i=0; i<output.length;i++){

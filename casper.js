@@ -193,9 +193,8 @@ var id;
         clickedNodeL += node.nodes[index].numChildren;
         var found = false;
         console.log(node.nodes[index]._bounds);
-        if(clickedNodeL <= k) {
+        if(clickedNodeL == k) {
             drawRect(node.nodes[index]._bounds);
-            //drawGreen(node.nodes[index].children,id);
         }
         
         
@@ -212,7 +211,7 @@ var id;
                     else if(clickedNodeL + node.nodes[2].numChildren >= k) {
                         console.log("Add node: " + 2);
                         drawRect(node.nodes[2]._bounds);
-                        //drawGreen(node.nodes[2].children,id);
+                        drawGreen(node.nodes[2].children,id);
                         drawGreen(node.nodes[2]._bounds,id);
 
                         return;
@@ -279,7 +278,7 @@ var id;
                     else {
                         if(node.nodes[0].numChildren !== 0) {
                             clickedNodeL += node.nodes[0].numChildren;
-                            drawRect(node.nodes[0]._bounds);
+                           drawRect(node.nodes[0]._bounds);
                             drawGreen(node.nodes[0]._bounds,id);
                         }
                         if(node.nodes[3].numChildren !== 0) {
@@ -301,7 +300,6 @@ var id;
     	            drawGreen(node._bounds,id);
     	        
              }
-    
              if(node._parent) {
                 console.log("Check Parent");
                 node.get(node._parent,node._parent._index);
@@ -334,6 +332,7 @@ var id;
             drawGreen(this._bounds,id);
         }
 
+        console.log("DONE DRAW");
         return this.children;
     };
 

@@ -218,8 +218,10 @@ var PIR = function(level,e,offsetLeft,offsetTop) {
 	   }*/
 	   
 	    var xy = canvas2grid_(e.pageX-offsetLeft,e.pageY-offsetTop,level);
-	    var cell = xy[0] + xy[1]*Math.pow(level,2);
-	    console.log(arr[cell].voronoi);
+	    //var cell = xy[0] + xy[1]*Math.pow(level,2);
+	    var cell = xy[0] + xy[1]*Math.pow(2,level);
+	    //console.log(arr[cell].voronoi);
+	    console.log("CELL: " + cell);
 	    
 	    //Highlight grid cell, and color points green
 	    drawRect({
